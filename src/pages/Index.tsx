@@ -404,6 +404,15 @@ export default function Index() {
   const [current, setCurrent] = useState(0);
   const [animDir, setAnimDir] = useState<"next" | "prev" | null>(null);
   const [visible, setVisible] = useState(true);
+  const [isPrinting, setIsPrinting] = useState(false);
+
+  const handlePrint = () => {
+    setIsPrinting(true);
+    setTimeout(() => {
+      window.print();
+      setIsPrinting(false);
+    }, 300);
+  };
 
   const goTo = useCallback(
     (idx: number) => {
@@ -448,6 +457,21 @@ export default function Index() {
       <div className="slide-counter">
         <span className="slide-num">{String(current + 1).padStart(2, "0")}</span>
         <span className="slide-total">/ {slides.length}</span>
+      </div>
+
+      {/* PDF button */}
+      <button className="pdf-btn no-print" onClick={handlePrint} disabled={isPrinting}>
+        <Icon name="Download" size={15} />
+        <span>{isPrinting ? "Подготовка..." : "Скачать PDF"}</span>
+      </button>
+
+      {/* All slides for print */}
+      <div className="print-all">
+        {slides.map((s) => (
+          <div key={s.id} className="print-slide">
+            <SlideRenderer slide={s} />
+          </div>
+        ))}
       </div>
 
       {/* Slide content */}
